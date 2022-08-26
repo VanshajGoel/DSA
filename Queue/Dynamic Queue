@@ -1,0 +1,106 @@
+#include <iostream>
+using namespace std;
+
+template <typename T>
+class Queue
+{
+	int lastidx, frontidx, size, capacity;
+	int *arr;
+	public:
+		Queue ()
+		{
+			lastidx = -1;
+			frontidx = -1;
+			capacity = 4;
+			size = 0;
+			arr = new T[4];
+		}
+		void push (T data)
+		{
+			if( size < capacity )
+			{
+				lastidx = (lastidx+1) % capacity;
+				arr [lastidx] = data;
+				size++;
+				if (frontidx == -1)
+					frontidx++;
+			}
+			else
+			{
+				T *newarr = new T[capacity*2];
+				int temp = frontidx;
+				for (int i = 0; i < size; i++)
+				{
+					newarr[i] = arr[temp];
+					temp = (temp+1)%capacity;
+				}
+				frontidx = 0;
+				lastidx = size-1;
+				capacity *= 2;
+				delete []arr;
+				arr = newarr;
+				lastidx++;
+				arr [lastidx] = data;
+				size++;
+			}
+		}
+		T front ()
+		{
+			if (size == 0)
+			{
+				cout << "Queue Empty"<<endl;
+				return -1;
+			}
+			return arr[frontidx];
+		}
+		void pop ()
+		{
+			if (size == 0)
+				cout <<"Queue Underflow"<<endl;
+			else
+			{
+				frontidx = (frontidx+1)%capacity;
+				size--;
+				if (size == 0)
+				{
+					frontidx = -1;
+					lastidx = -1;
+				}
+			}
+		}
+		int getSize ()
+		{
+			return size;
+		}
+		bool isEmpty ()
+		{
+			return size == 0;
+		}
+};
+
+int main ()
+{
+	Queue<int> q;
+ q.push(10);
+ q.push(20);
+ q.push(30);
+ q.push(40);
+ q.push(50);
+ q.push(60);
+ q.push(70);
+ cout<<q.front()<<endl;
+ q.pop();
+ q.pop();
+ q.pop();
+ cout<<q.front()<<endl;
+ cout<<q.getSize()<<endl;
+ cout<<q.isEmpty()<<endl;
+ q.push(60);
+ q.push(70);
+
+ q.pop();
+ q.pop();
+ cout<<q.front()<<endl;
+ cout<<q.getSize()<<endl;
+ return 0;
+}
